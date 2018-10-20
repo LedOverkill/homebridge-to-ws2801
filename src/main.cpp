@@ -37,6 +37,7 @@ uint8_t clockPin = D3;    // Green wire on Adafruit Pixels
 
 void colorWipe();
 void parseCommand(String request, String &command, int &value);
+void updateStrip();
 
 int getPowerState();
 void setPowerState(int);
@@ -138,11 +139,12 @@ void loop() {
   delay(10);
   Serial.println("Client disonnected");
   Serial.println("------------------------------------------------");
-
-  // colorWipe();
 }
 
 /* Helper functions */
+void updateStrip() {
+  colorWipe();
+}
 
 void colorWipe() {
   //Serial.println("Update color");
@@ -193,6 +195,7 @@ void setBrightness(int value) {
   Serial.print("setBrightness: ");
   Serial.println(value);
   stripState.b = value;
+  updateStrip();
 }
 
 int getHue() {
@@ -205,6 +208,7 @@ void setHue(int value) {
   Serial.print("setHue: ");
   Serial.println(value);
   stripState.h = value;
+  updateStrip();
 }
 
 int getSaturation() {
@@ -217,4 +221,5 @@ void setSaturation(int value) {
   Serial.print("setSaturation: ");
   Serial.println(value);
   stripState.s = value;
+  updateStrip();
 }
