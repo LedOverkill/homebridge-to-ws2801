@@ -80,9 +80,9 @@ void setup() {
   server.begin();
   Serial.println("Server started");
 
-  stripState.h = 240;
-  stripState.s = 50;
-  stripState.b = 40;
+  stripState.h = 0;
+  stripState.s = 0;
+  stripState.b = 0;
   strip.begin();
   strip.show();
 }
