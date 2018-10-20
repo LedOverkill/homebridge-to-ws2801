@@ -35,7 +35,7 @@ const char* wifi_password = "";
 uint8_t dataPin  = D2;    // Yellow wire on Adafruit Pixels
 uint8_t clockPin = D3;    // Green wire on Adafruit Pixels
 
-void colorWipe(uint8_t, uint8_t, uint8_t, uint8_t);
+void colorWipe();
 void parseCommand(String request, String &command, int &value);
 
 int getPowerState();
@@ -47,9 +47,16 @@ void setHue(int);
 int getSaturation();
 void setSaturation(int);
 
-// Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
+
 Adafruit_WS2801 strip = Adafruit_WS2801(25, dataPin, clockPin);
 WiFiServer server(server_port);
+
+struct state {
+  char powerState;
+  int h;
+  int s;
+  int b;
+} stripState;
 
 void setup() {
   Serial.begin(115200);
@@ -72,10 +79,11 @@ void setup() {
   server.begin();
   Serial.println("Server started");
 
-  // strip.begin();
-
-  // Update LED contents, to start they are all 'off'
-  // strip.show();
+  stripState.h = 240;
+  stripState.s = 50;
+  stripState.b = 40;
+  strip.begin();
+  strip.show();
 }
 
 void loop() {
@@ -130,15 +138,25 @@ void loop() {
   delay(10);
   Serial.println("Client disonnected");
   Serial.println("------------------------------------------------");
+
+  // colorWipe();
 }
 
 /* Helper functions */
 
-void colorWipe(uint8_t r, uint8_t g, uint8_t b, uint8_t wait) {
+void colorWipe() {
+  //Serial.println("Update color");
   int i;
+  uint8_t wait = 50;
+  int rgb_colors[3];
+  
+  H2R_HSBtoRGB(getHue(), getSaturation(), getBrightness(), rgb_colors);
+  // Serial.println(rgb_colors[0]);
+  // Serial.println(rgb_colors[1]);
+  // Serial.println(rgb_colors[2]);
 
   for (i=0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, r, g, b);
+      strip.setPixelColor(i, rgb_colors[0], rgb_colors[1], rgb_colors[2]);
       strip.show();
       delay(wait);
   }
@@ -167,36 +185,36 @@ void setPowerState(int value) {
 
 int getBrightness() {
   Serial.println("Calling: getBrightness");
-  return 65;
+  return stripState.b;
 }
 
 void setBrightness(int value) {
   Serial.println("Calling: setBrightness");
   Serial.print("setBrightness: ");
   Serial.println(value);
-
+  stripState.b = value;
 }
 
 int getHue() {
   Serial.println("Calling: getHue");
-  return 24;
+  return stripState.h;
 }
 
 void setHue(int value) {
   Serial.println("Calling: setHue");
   Serial.print("setHue: ");
   Serial.println(value);
-
+  stripState.h = value;
 }
 
 int getSaturation() {
   Serial.println("Calling: getSaturation");
-  return 12;
+  return stripState.s;
 }
 
 void setSaturation(int value) {
   Serial.println("Calling: setSaturation");
   Serial.print("setSaturation: ");
   Serial.println(value);
-
+  stripState.s = value;
 }
