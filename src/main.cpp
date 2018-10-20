@@ -60,17 +60,16 @@ void setup() {
 }
 
 void loop() {
-  // Some example procedures showing how to display to the pixels
-  colorWipe(255, 0, 0, 50);
-  colorWipe(0, 255, 0, 50);
-  colorWipe(0, 0, 255, 50);
+  int rgb_colors[3];
+  H2R_HSBtoRGB(284, 46, 33, rgb_colors);
+  colorWipe(rgb_colors[0], rgb_colors[1], rgb_colors[2], 50);
 }
 
 /* Helper functions */
 
 void colorWipe(uint8_t r, uint8_t g, uint8_t b, uint8_t wait) {
   int i;
-  
+
   for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, r, g, b);
       strip.show();
