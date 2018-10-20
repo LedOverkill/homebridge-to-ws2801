@@ -7,12 +7,14 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 #include <HSBColor.h>
 #include <Adafruit_WS2801.h>
 
 const int server_port = 8080;
 const char* wifi_ssid = "Polynomialzeit-Turingreduktion";
 const char* wifi_password = "";
+const char* hostname = "ben-esp8266";
 
 // Choose which 2 pins you will use for output.
 // Can be any valid output pins.
@@ -64,6 +66,14 @@ void setup() {
     Serial.print(".");
   }
   Serial.println();
+
+  WiFi.hostname(hostname);
+
+  if (!MDNS.begin(hostname)) {
+    Serial.println("Error setting up MDNS responder!");
+  }
+
+  Serial.println("mDNS responder started");
 
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
