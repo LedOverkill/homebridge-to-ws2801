@@ -30,27 +30,10 @@
 uint8_t dataPin  = D2;    // Yellow wire on Adafruit Pixels
 uint8_t clockPin = D3;    // Green wire on Adafruit Pixels
 
-// Don't forget to connect the ground wire to Arduino ground,
-// and the +5V wire to a +5V supply
-
-uint32_t Color(byte r, byte g, byte b);
-void colorWipe(uint32_t c, uint8_t wait);
+void colorWipe(uint8_t r, uint8_t g, uint8_t b, uint8_t wait);
 
 // Set the first variable to the NUMBER of pixels. 25 = 25 pixels in a row
 Adafruit_WS2801 strip = Adafruit_WS2801(25, dataPin, clockPin);
-
-// Optional: leave off pin numbers to use hardware SPI
-// (pinout is then specific to each board and can't be changed)
-//Adafruit_WS2801 strip = Adafruit_WS2801(25);
-
-// For 36mm LED pixels: these pixels internally represent color in a
-// different format.  Either of the above constructors can accept an
-// optional extra parameter: WS2801_RGB is 'conventional' RGB order
-// WS2801_GRB is the GRB order required by the 36mm pixels.  Other
-// than this parameter, your code does not need to do anything different;
-// the library will handle the format change.  Examples:
-//Adafruit_WS2801 strip = Adafruit_WS2801(25, dataPin, clockPin, WS2801_GRB);
-//Adafruit_WS2801 strip = Adafruit_WS2801(25, WS2801_GRB);
 
 void setup() {
   Serial.begin(115200);
@@ -77,33 +60,21 @@ void setup() {
 
 void loop() {
   // Some example procedures showing how to display to the pixels
-  colorWipe(Color(255, 0, 0), 50);
-  colorWipe(Color(0, 255, 0), 50);
-  colorWipe(Color(0, 0, 255), 50);
+  colorWipe(255, 0, 0, 50);
+  colorWipe(0, 255, 0, 50);
+  colorWipe(0, 0, 255, 50);
 }
 
-// fill the dots one after the other with said color
-// good for testing purposes
-void colorWipe(uint32_t c, uint8_t wait) {
+/* Helper functions */
+
+void colorWipe(uint8_t r, uint8_t g, uint8_t b, uint8_t wait) {
   int i;
   
   for (i=0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, c);
+      strip.setPixelColor(i, r, g, b);
       strip.show();
       delay(wait);
   }
 }
 
-/* Helper functions */
 
-// Create a 24 bit color value from R,G,B
-uint32_t Color(byte r, byte g, byte b)
-{
-  uint32_t c;
-  c = r;
-  c <<= 8;
-  c |= g;
-  c <<= 8;
-  c |= b;
-  return c;
-}
