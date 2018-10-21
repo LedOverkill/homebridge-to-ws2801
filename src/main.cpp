@@ -64,6 +64,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println();
 
+  WiFi.hostname(hostname);
   WiFi.begin(wifi_ssid, wifi_password);
 
   Serial.print("Connecting");
@@ -73,8 +74,6 @@ void setup() {
     Serial.print(".");
   }
   Serial.println();
-
-  WiFi.hostname(hostname);
 
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
