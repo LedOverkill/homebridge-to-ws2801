@@ -153,12 +153,12 @@ void colorWipe() {
   int i;
   uint8_t wait = 50;
   int rgb_colors[3];
-  
-  H2R_HSBtoRGB(getHue(), getSaturation(), getBrightness(), rgb_colors);
-  // Serial.println(rgb_colors[0]);
-  // Serial.println(rgb_colors[1]);
-  // Serial.println(rgb_colors[2]);
+
   H2R_HSBtoRGB(stripState.h, stripState.s, stripState.b, rgb_colors);
+
+  Serial.println(rgb_colors[0]);
+  Serial.println(rgb_colors[1]);
+  Serial.println(rgb_colors[2]);
 
   for (i=0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, rgb_colors[0], rgb_colors[1], rgb_colors[2]);
