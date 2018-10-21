@@ -7,7 +7,6 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
 #include <HSBColor.h>
 #include <Adafruit_WS2801.h>
 
@@ -76,12 +75,6 @@ void setup() {
   Serial.println();
 
   WiFi.hostname(hostname);
-
-  if (!MDNS.begin(hostname)) {
-    Serial.println("Error setting up MDNS responder!");
-  }
-
-  Serial.println("mDNS responder started");
 
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
