@@ -7,18 +7,13 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <HSBColor.h>
-#include <Adafruit_WS2801.h>
+#define FASTLED_ESP8266_NODEMCU_PIN_ORDER
+#include <FastLED.h>
 
 const int server_port = 8080;
 const char* wifi_ssid = "Polynomialzeit-Turingreduktion";
 const char* wifi_password = "";
 const char* hostname = "ben-esp8266";
-
-// Choose which 2 pins you will use for output.
-// Can be any valid output pins.
-// The colors of the wires may be totally different so
-// BE SURE TO CHECK YOUR PIXELS TO SEE WHICH WIRES TO USE!
 
 // Mapping pin to GPIO pins on NodeMCU
 // static const uint8_t D0   = 16;
@@ -32,11 +27,12 @@ const char* hostname = "ben-esp8266";
 // static const uint8_t D8   = 15;
 // static const uint8_t D9   = 3;
 // static const uint8_t D10  = 1;
+ 
+#define NUM_LEDS 25
+#define DATA_PIN 2 // Yellow wire on Adafruit Pixels
+#define CLOCK_PIN 3 // Green wire on Adafruit Pixels
+CRGB leds[NUM_LEDS];
 
-uint8_t dataPin  = D2;    // Yellow wire on Adafruit Pixels
-uint8_t clockPin = D3;    // Green wire on Adafruit Pixels
-
-void colorWipe();
 void parseCommand(String request, String &command, int &value);
 void updateStrip();
 
@@ -49,8 +45,6 @@ void setHue(int);
 int getSaturation();
 void setSaturation(int);
 
-
-Adafruit_WS2801 strip = Adafruit_WS2801(25, dataPin, clockPin);
 WiFiServer server(server_port);
 
 struct state {
@@ -85,8 +79,9 @@ void setup() {
   stripState.h = 0;
   stripState.s = 0;
   stripState.b = 0;
-  strip.begin();
-  strip.show();
+
+  FastLED.addLeds<WS2801, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
+  FastLED.show();
 }
 
 void loop() {
@@ -145,25 +140,11 @@ void loop() {
 
 /* Helper functions */
 void updateStrip() {
-  colorWipe();
-}
-
-void colorWipe() {
-  //Serial.println("Update color");
-  int i;
-  uint8_t wait = 50;
-  int rgb_colors[3];
-
-  H2R_HSBtoRGB(stripState.h, stripState.s, stripState.b, rgb_colors);
-
-  Serial.println(rgb_colors[0]);
-  Serial.println(rgb_colors[1]);
-  Serial.println(rgb_colors[2]);
-
-  for (i=0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, rgb_colors[0], rgb_colors[1], rgb_colors[2]);
-      strip.show();
-      delay(wait);
+  for(int dot = 0; dot < NUM_LEDS; dot++) { 
+      //Using a 'rainbow' color with hue 0-255, saturating 0-255, and brightness (value) 0-255
+      leds[dot] = CHSV(stripState.h, stripState.s, stripState.b);
+      FastLED.show();
+      delay(30);
   }
 }
 
