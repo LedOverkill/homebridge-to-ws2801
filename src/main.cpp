@@ -27,7 +27,7 @@ const char* hostname = "ben-esp8266";
 // static const uint8_t D8   = 15;
 // static const uint8_t D9   = 3;
 // static const uint8_t D10  = 1;
- 
+
 #define NUM_LEDS 25
 #define DATA_PIN 2 // Yellow wire on Adafruit Pixels
 #define CLOCK_PIN 3 // Green wire on Adafruit Pixels
@@ -140,7 +140,7 @@ void loop() {
 
 /* Helper functions */
 void updateStrip() {
-  for(int dot = 0; dot < NUM_LEDS; dot++) { 
+  for(int dot = 0; dot < NUM_LEDS; dot++) {
       //Using a 'rainbow' color with hue 0-255, saturating 0-255, and brightness (value) 0-255
       leds[dot] = CHSV(stripState.h, stripState.s, stripState.b);
       FastLED.show();
@@ -160,13 +160,21 @@ void parseCommand(String request, String &command, int &value) {
 
 int getPowerState() {
   Serial.println("Calling: getPowerState");
-  return 1;
+  return stripState.b;
 }
 
 void setPowerState(int value) {
   Serial.println("Calling: setPowerState");
   Serial.print("setPowerState: ");
   Serial.println(value);
+
+  if (value == 0) {
+    stripState.b = 0;
+  } else {
+    stripState.b = 50;
+  }
+
+  updateStrip();
 }
 
 int getBrightness() {
