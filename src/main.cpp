@@ -45,6 +45,10 @@ void setHue(int);
 int getSaturation();
 void setSaturation(int);
 
+float gHueFactor = 0.708;
+float gSaturationFactor = 2.55;
+float gBrightnessFactor = 2.55;
+
 WiFiServer server(server_port);
 
 struct state {
@@ -140,9 +144,11 @@ void loop() {
 
 /* Helper functions */
 void updateStrip() {
+  CHSV hsv((int)stripState.h*gHueFactor, (int)stripState.s*gSaturationFactor, (int)stripState.b*gBrightnessFactor);
+  
   for(int dot = 0; dot < NUM_LEDS; dot++) {
       //Using a 'rainbow' color with hue 0-255, saturating 0-255, and brightness (value) 0-255
-      leds[dot] = CHSV(stripState.h, stripState.s, stripState.b);
+      leds[dot] = hsv;
       FastLED.show();
       delay(30);
   }
